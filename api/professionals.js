@@ -1,31 +1,105 @@
-import { NeonStorage } from '../server/neonStorage';
+import { Pool } from '@neondatabase/serverless';
 import { insertProfessionalSchema } from '../shared/schema';
 
-// Cria uma única instância do storage para ser reutilizada
-const storage = new NeonStorage();
+// Configuração do pool de conexões
+const pool = new Pool({ 
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined
+});
+
+// Funções do storage
+async function getAllProfessionals() {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM professionals ORDER BY name'
+    );
+    return result.rows;
+  } catch (error) {
+    console.error('Erro ao buscar profissionais:', error);
+    throw new Error(`Erro ao buscar profissionais: ${error}`);
+  }
+}
+
+async function getProfessional(id) {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM professionals WHERE id = $1',
+      [id]
+    );
+    if (result.rows.length === 0) return undefined;
+    return result.rows[0];
+  } catch (error) {
+    console.error('Erro ao buscar profissional:', error);
+    return undefined;
+  }
+}
+
+async function createProfessional(professional) {
+  try {
+    const result = await pool.query(
+      'INSERT INTO professionals (name, initials, active) VALUES ($1, $2, $3) RETURNING *',
+      [professional.name, professional.initials, professional.active]
+    );
+    return result.rows[0];
+  } catch (error) {
+    console.error('Erro ao criar profissional:', error);
+    throw new Error(`Erro ao criar profissional: ${error}`);
+  }
+}
+
+async function updateProfessional(id, data) {
+  try {
+    const currentProf = await getProfessional(id);
+    if (!currentProf) return undefined;
+    
+    const updatedProf = { ...currentProf, ...data };
+    
+    const result = await pool.query(
+      'UPDATE professionals SET name = $1, initials = $2, active = $3 WHERE id = $4 RETURNING *',
+      [updatedProf.name, updatedProf.initials, updatedProf.active, id]
+    );
+    
+    return result.rows[0];
+  } catch (error) {
+    console.error('Erro ao atualizar profissional:', error);
+    return undefined;
+  }
+}
+
+async function deleteProfessional(id) {
+  try {
+    const result = await pool.query(
+      'DELETE FROM professionals WHERE id = $1 RETURNING id',
+      [id]
+    );
+    return result.rows.length > 0;
+  } catch (error) {
+    console.error('Erro ao excluir profissional:', error);
+    return false;
+  }
+}
 
 export default async function handler(req, res) {
   const method = req.method;
 
-  // Rotas para profissionais
   try {
     switch (method) {
       case 'GET':
         if (req.query.id) {
-          const professional = await storage.getProfessional(Number(req.query.id));
+          const professional = await getProfessional(Number(req.query.id));
           if (!professional) {
             return res.status(404).json({ error: 'Profissional não encontrado' });
           }
           return res.status(200).json(professional);
         } else {
-          const professionals = await storage.getAllProfessionals();
+          const professionals = await getAllProfessionals();
           return res.status(200).json(professionals);
         }
 
       case 'POST':
         try {
           const validatedData = insertProfessionalSchema.parse(req.body);
-          const professional = await storage.createProfessional(validatedData);
+          const professional = await createProfessional(validatedData);
           return res.status(201).json(professional);
         } catch (error) {
           return res.status(400).json({ error: 'Dados inválidos', details: error.message });
@@ -38,14 +112,13 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'ID não fornecido' });
           }
           
-          const existingProfessional = await storage.getProfessional(id);
+          const existingProfessional = await getProfessional(id);
           if (!existingProfessional) {
             return res.status(404).json({ error: 'Profissional não encontrado' });
           }
           
-          // Validação parcial dos dados
           const validatedData = insertProfessionalSchema.partial().parse(req.body);
-          const updated = await storage.updateProfessional(id, validatedData);
+          const updated = await updateProfessional(id, validatedData);
           
           if (!updated) {
             return res.status(404).json({ error: 'Profissional não encontrado' });
@@ -63,12 +136,12 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'ID não fornecido' });
           }
           
-          const existingProfessional = await storage.getProfessional(id);
+          const existingProfessional = await getProfessional(id);
           if (!existingProfessional) {
             return res.status(404).json({ error: 'Profissional não encontrado' });
           }
           
-          const deleted = await storage.deleteProfessional(id);
+          const deleted = await deleteProfessional(id);
           if (!deleted) {
             return res.status(500).json({ error: 'Erro ao excluir profissional' });
           }
