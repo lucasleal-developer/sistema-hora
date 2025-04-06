@@ -100,9 +100,22 @@ async function deleteTimeSlot(id) {
 }
 
 export default async function handler(req, res) {
+  // Log do método e headers
+  console.log('Método:', req.method);
+  console.log('Headers:', req.headers);
+  console.log('Content-Type:', req.headers['content-type']);
+
+  // Se o content-type não for application/json, retorna erro
+  if (req.method === 'POST' && !req.headers['content-type']?.includes('application/json')) {
+    return res.status(400).json({ 
+      error: 'Content-Type inválido',
+      expected: 'application/json',
+      received: req.headers['content-type']
+    });
+  }
+
   const method = req.method;
 
-  // Rotas para slots de tempo
   try {
     switch (method) {
       case 'GET':
@@ -122,10 +135,30 @@ export default async function handler(req, res) {
 
       case 'POST':
         try {
-          console.log('Recebido POST em /api/time-slots com body:', req.body);
+          // Log do corpo da requisição
+          console.log('Recebido POST em /api/time-slots');
+          console.log('Body (raw):', req.body);
+          console.log('Body (typeof):', typeof req.body);
+          console.log('Body (JSON.stringify):', JSON.stringify(req.body));
+
+          // Se o body for uma string, tenta fazer o parse
+          let data = req.body;
+          if (typeof req.body === 'string') {
+            try {
+              data = JSON.parse(req.body);
+              console.log('Body parseado:', data);
+            } catch (e) {
+              console.error('Erro ao fazer parse do body:', e);
+              return res.status(400).json({ 
+                error: 'JSON inválido', 
+                details: e.message,
+                receivedBody: req.body
+              });
+            }
+          }
 
           // Validar dados usando o schema
-          const validatedData = insertTimeSlotSchema.parse(req.body);
+          const validatedData = insertTimeSlotSchema.parse(data);
           console.log('Dados validados:', validatedData);
 
           const timeSlot = await createTimeSlot(validatedData);
@@ -137,7 +170,8 @@ export default async function handler(req, res) {
           return res.status(400).json({ 
             error: 'Dados inválidos', 
             details: error.message,
-            receivedData: req.body 
+            receivedData: req.body,
+            stack: error.stack
           });
         }
 
