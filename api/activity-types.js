@@ -1,5 +1,5 @@
-import { pool } from './db';
-import { insertActivityTypeSchema } from '../shared/schema';
+import { pool } from './db.js';
+import { insertActivityTypeSchema } from '../shared/schema.js';
 
 // Funções do storage
 async function getAllActivityTypes() {

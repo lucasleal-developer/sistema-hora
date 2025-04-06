@@ -1,5 +1,5 @@
-import { pool } from './db';
-import { insertTimeSlotSchema } from '../shared/schema';
+import { pool } from './db.js';
+import { insertTimeSlotSchema } from '../shared/schema.js';
 
 // Funções do storage
 async function getAllTimeSlots() {

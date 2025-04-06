@@ -1,5 +1,5 @@
-import { pool } from './db';
-import { insertProfessionalSchema } from '../shared/schema';
+import { pool } from './db.js';
+import { insertProfessionalSchema } from '../shared/schema.js';
 
 // Funções do storage
 async function getAllProfessionals() {
