@@ -1,6 +1,13 @@
 import { pool } from './db.js';
 import { insertTimeSlotSchema } from './schema.js';
 
+// Configuração do bodyParser
+export const config = {
+  api: {
+    bodyParser: true
+  }
+};
+
 // Função para garantir que a tabela existe
 async function ensureTableExists() {
   try {
@@ -141,24 +148,17 @@ export default async function handler(req, res) {
           console.log('Body (typeof):', typeof req.body);
           console.log('Body (JSON.stringify):', JSON.stringify(req.body));
 
-          // Se o body for uma string, tenta fazer o parse
-          let data = req.body;
-          if (typeof req.body === 'string') {
-            try {
-              data = JSON.parse(req.body);
-              console.log('Body parseado:', data);
-            } catch (e) {
-              console.error('Erro ao fazer parse do body:', e);
-              return res.status(400).json({ 
-                error: 'JSON inválido', 
-                details: e.message,
-                receivedBody: req.body
-              });
-            }
+          // Garantir que temos um objeto
+          if (!req.body || typeof req.body !== 'object') {
+            return res.status(400).json({
+              error: 'Corpo da requisição inválido',
+              details: 'O corpo deve ser um objeto JSON',
+              received: req.body
+            });
           }
 
           // Validar dados usando o schema
-          const validatedData = insertTimeSlotSchema.parse(data);
+          const validatedData = insertTimeSlotSchema.parse(req.body);
           console.log('Dados validados:', validatedData);
 
           const timeSlot = await createTimeSlot(validatedData);
