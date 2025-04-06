@@ -1,5 +1,5 @@
 import { pool } from './db.js';
-import { insertTimeSlotSchema } from '../shared/schema.js';
+import { insertTimeSlotSchema } from './schema.js';
 
 // Função para garantir que a tabela existe
 async function ensureTableExists() {
@@ -61,14 +61,28 @@ async function getBaseTimeSlots() {
 
 async function createTimeSlot(timeSlot) {
   try {
+    // Validar campos obrigatórios
+    if (!timeSlot.start_time || !timeSlot.end_time) {
+      throw new Error('Os campos start_time e end_time são obrigatórios');
+    }
+
+    // Definir is_base como false se não for fornecido
+    const is_base = timeSlot.is_base ?? false;
+
+    console.log('Criando time slot com dados:', {
+      start_time: timeSlot.start_time,
+      end_time: timeSlot.end_time,
+      is_base
+    });
+
     const result = await pool.query(
       'INSERT INTO time_slots (start_time, end_time, is_base) VALUES ($1, $2, $3) RETURNING *',
-      [timeSlot.start_time, timeSlot.end_time, timeSlot.is_base]
+      [timeSlot.start_time, timeSlot.end_time, is_base]
     );
     return result.rows[0];
   } catch (error) {
     console.error('Erro ao criar horário:', error);
-    throw new Error(`Erro ao criar horário: ${error}`);
+    throw error;
   }
 }
 
@@ -108,11 +122,23 @@ export default async function handler(req, res) {
 
       case 'POST':
         try {
+          console.log('Recebido POST em /api/time-slots com body:', req.body);
+
+          // Validar dados usando o schema
           const validatedData = insertTimeSlotSchema.parse(req.body);
+          console.log('Dados validados:', validatedData);
+
           const timeSlot = await createTimeSlot(validatedData);
+          console.log('Time slot criado:', timeSlot);
+
           return res.status(201).json(timeSlot);
         } catch (error) {
-          return res.status(400).json({ error: 'Dados inválidos', details: error.message });
+          console.error('Erro ao criar horário:', error);
+          return res.status(400).json({ 
+            error: 'Dados inválidos', 
+            details: error.message,
+            receivedData: req.body 
+          });
         }
 
       case 'DELETE':

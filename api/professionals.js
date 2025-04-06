@@ -1,5 +1,5 @@
 import { pool } from './db.js';
-import { insertProfessionalSchema } from '../shared/schema.js';
+import { insertProfessionalSchema } from './schema.js';
 
 // Função para garantir que a tabela existe
 async function ensureTableExists() {
