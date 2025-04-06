@@ -1,7 +1,7 @@
 import { pool } from './db.js';
 import { insertTimeSlotSchema } from './schema.js';
 
-// Configuração do bodyParser
+// Configuração do bodyParser para processar requisições JSON corretamente
 export const config = {
   api: {
     bodyParser: true
