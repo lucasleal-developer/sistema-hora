@@ -1,5 +1,8 @@
-import { storage } from './storage';
+import { NeonStorage } from '../server/neonStorage';
 import { insertProfessionalSchema } from '../shared/schema';
+
+// Cria uma única instância do storage para ser reutilizada
+const storage = new NeonStorage();
 
 export default async function handler(req, res) {
   const method = req.method;
