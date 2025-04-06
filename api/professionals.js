@@ -1,4 +1,4 @@
-import { storage } from '../server/storage';
+import { storage } from './storage';
 import { insertProfessionalSchema } from '../shared/schema';
 
 export default async function handler(req, res) {
