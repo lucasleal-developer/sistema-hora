@@ -1,0 +1,13 @@
+# Ignorar arquivos de ambiente local
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignorar build Vercel
+.vercel
+
+# Adicionar a pasta dist ao .gitignore
+dist
+dist-ssr

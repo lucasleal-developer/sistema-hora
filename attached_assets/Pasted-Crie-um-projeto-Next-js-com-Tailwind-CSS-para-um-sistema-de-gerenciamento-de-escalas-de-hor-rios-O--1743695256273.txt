@@ -1,0 +1,54 @@
+Crie um projeto Next.js com Tailwind CSS para um sistema de gerenciamento de escalas de horários. O sistema deve exibir uma tabela dinâmica onde cada coluna representa um profissional e cada linha representa um horário do dia. Cada aba corresponde a um dia da semana, permitindo alternância entre os dias.
+
+1️⃣ Estrutura do Projeto
+O projeto deve ter pastas organizadas: components/, pages/, styles/ e utils/.
+
+O arquivo tailwind.config.js deve ser configurado para suportar customizações de estilo.
+
+2️⃣ Página Inicial (index.js)
+Deve conter um cabeçalho com o nome do sistema.
+
+Deve ter um botão que leva à visualização das escalas de horários (/schedule).
+
+O layout deve ser responsivo e estilizado com Tailwind CSS.
+
+3️⃣ Página de Tabela de Horários (schedule.js)
+Deve exibir uma tabela dinâmica com os profissionais nas colunas e horários nas linhas.
+
+Deve permitir alternar entre os dias da semana usando um componente de seleção de dias (DaySelector).
+
+Utilize React Table para gerenciar os dados da tabela.
+
+4️⃣ Componente de Seleção de Dia (DaySelector.js)
+Deve exibir botões estilizados para cada dia da semana.
+
+O dia selecionado deve ficar destacado.
+
+Ao clicar em um dia, a tabela deve ser atualizada.
+
+5️⃣ Componente de Tabela de Horários (ScheduleTable.js)
+Deve receber os dados como props e renderizar a grade de horários.
+
+Cada célula da tabela deve exibir a atividade atribuída para aquele horário.
+
+Deve permitir abrir um modal para editar uma atividade ao clicar em uma célula.
+
+6️⃣ Modal de Edição de Horários (EditScheduleModal.js)
+Deve abrir ao clicar em uma célula da tabela.
+
+Deve conter inputs para selecionar a atividade, horário de início e fim.
+
+Deve ter um botão para salvar as alterações.
+
+Use React Hook Form para gerenciar os inputs.
+
+7️⃣ Conectar com API Backend
+Os dados da tabela devem ser carregados de uma API.
+
+Utilize fetch ou axios para buscar os horários e profissionais.
+
+A API retorna um JSON com a estrutura { dia: "segunda", profissionais: [{ nome: "Caio", horarios: [{hora: "08:00", atividade: "Plantão"}] }] }.
+
+Ao salvar edições no modal, os dados devem ser enviados para a API.
+
+Implemente a aplicação com um design limpo, responsivo e funcional, garantindo boa usabilidade para visualização e edição dos horários.
