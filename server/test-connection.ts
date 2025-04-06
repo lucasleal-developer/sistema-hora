@@ -1,16 +1,19 @@
-import { testNeonConnection } from './neondb';
+import { testConnection } from './db';
 
-async function testConnection() {
-  console.log('Testando conexão com o banco de dados Neon...');
-  const isConnected = await testNeonConnection();
+async function main() {
+  console.log('Testando conexão com o banco de dados...');
+  const success = await testConnection();
   
-  if (isConnected) {
-    console.log('✅ Conexão estabelecida com sucesso!');
+  if (success) {
+    console.log('✅ Teste de conexão concluído com sucesso!');
+    process.exit(0);
   } else {
-    console.log('❌ Falha ao conectar com o banco de dados.');
+    console.error('❌ Teste de conexão falhou!');
+    process.exit(1);
   }
-  
-  process.exit(isConnected ? 0 : 1);
 }
 
-testConnection(); 
+main().catch(error => {
+  console.error('❌ Erro inesperado:', error);
+  process.exit(1);
+}); 

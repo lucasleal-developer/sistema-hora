@@ -1,0 +1,414 @@
+[33mcommit 11baab09b31a1ec673a707714f4f7762df303ad9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: lucasleal-developer <lucasleal.developer@gmail.com>
+Date:   Sun Apr 6 07:03:52 2025 -0300
+
+    feat: server and database setup
+
+[1mdiff --git a/package-lock.json b/package-lock.json[m
+[1mindex 86cfbd6..02f409a 100644[m
+[1m--- a/package-lock.json[m
+[1m+++ b/package-lock.json[m
+[36m@@ -47,7 +47,8 @@[m
+         "cmdk": "^1.0.0",[m
+         "connect-pg-simple": "^10.0.0",[m
+         "date-fns": "^3.6.0",[m
+[31m-        "drizzle-orm": "^0.39.1",[m
+[32m+[m[32m        "dotenv": "^16.4.7",[m
+[32m+[m[32m        "drizzle-orm": "^0.39.3",[m
+         "drizzle-zod": "^0.7.0",[m
+         "embla-carousel-react": "^8.3.0",[m
+         "express": "^4.21.2",[m
+[36m@@ -70,7 +71,7 @@[m
+         "tailwindcss-animate": "^1.0.7",[m
+         "vaul": "^1.1.0",[m
+         "wouter": "^3.3.5",[m
+[31m-        "ws": "^8.18.0",[m
+[32m+[m[32m        "ws": "^8.18.1",[m
+         "zod": "^3.23.8",[m
+         "zod-validation-error": "^3.4.0"[m
+       },[m
+[36m@@ -81,12 +82,12 @@[m
+         "@types/connect-pg-simple": "^7.0.3",[m
+         "@types/express": "4.17.21",[m
+         "@types/express-session": "^1.18.0",[m
+[31m-        "@types/node": "^20.16.11",[m
+[32m+[m[32m        "@types/node": "^20.17.30",[m
+         "@types/passport": "^1.0.16",[m
+         "@types/passport-local": "^1.0.38",[m
+         "@types/react": "^18.3.20",[m
+         "@types/react-dom": "^18.3.1",[m
+[31m-        "@types/ws": "^8.5.13",[m
+[32m+[m[32m        "@types/ws": "^8.18.1",[m
+         "@vitejs/plugin-react": "^4.3.2",[m
+         "autoprefixer": "^10.4.20",[m
+         "drizzle-kit": "^0.30.4",[m
+[36m@@ -3450,9 +3451,9 @@[m
+       "license": "MIT"[m
+     },[m
+     "node_modules/@types/node": {[m
+[31m-      "version": "20.16.11",[m
+[31m-      "resolved": "https://registry.npmjs.org/@types/node/-/node-20.16.11.tgz",[m
+[31m-      "integrity": "sha512-y+cTCACu92FyA5fgQSAI8A1H429g7aSK2HsO7K4XYUWc4dY5IUz55JSDIYT6/VsOLfGy8vmvQYC2hfb0iF16Uw==",[m
+[32m+[m[32m      "version": "20.17.30",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@types/node/-/node-20.17.30.tgz",[m
+[32m+[m[32m      "integrity": "sha512-7zf4YyHA+jvBNfVrk2Gtvs6x7E8V+YDW05bNfG2XkWDJfYRXrTiP/DsB2zSYTaHX0bGIujTBQdMVAhb+j7mwpg==",[m
+       "license": "MIT",[m
+       "dependencies": {[m
+         "undici-types": "~6.19.2"[m
+[36m@@ -3574,9 +3575,9 @@[m
+       }[m
+     },[m
+     "node_modules/@types/ws": {[m
+[31m-      "version": "8.5.13",[m
+[31m-      "resolved": "https://registry.npmjs.org/@types/ws/-/ws-8.5.13.tgz",[m
+[31m-      "integrity": "sha512-osM/gWBTPKgHV8XkTunnegTRIsvF6owmf5w+JtAfOw472dptdm0dlGv4xCt6GwQRcC2XVOvvRE/0bAoQcL2QkA==",[m
+[32m+[m[32m      "version": "8.18.1",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/@types/ws/-/ws-8.18.1.tgz",[m
+[32m+[m[32m      "integrity": "sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==",[m
+       "license": "MIT",[m
+       "dependencies": {[m
+         "@types/node": "*"[m
+[36m@@ -4344,6 +4345,18 @@[m
+         "csstype": "^3.0.2"[m
+       }[m
+     },[m
+[32m+[m[32m    "node_modules/dotenv": {[m
+[32m+[m[32m      "version": "16.4.7",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/dotenv/-/dotenv-16.4.7.tgz",[m
+[32m+[m[32m      "integrity": "sha512-47qPchRCykZC03FhkYAhrvwU4xDBFIj1QPqaarj6mdM/hgUzfPHcpkHJOn3mJAufFeeAxAzeGsr5X0M4k6fLZQ==",[m
+[32m+[m[32m      "license": "BSD-2-Clause",[m
+[32m+[m[32m      "engines": {[m
+[32m+[m[32m        "node": ">=12"[m
+[32m+[m[32m      },[m
+[32m+[m[32m      "funding": {[m
+[32m+[m[32m        "url": "https://dotenvx.com"[m
+[32m+[m[32m      }[m
+[32m+[m[32m    },[m
+     "node_modules/drizzle-kit": {[m
+       "version": "0.30.4",[m
+       "resolved": "https://registry.npmjs.org/drizzle-kit/-/drizzle-kit-0.30.4.tgz",[m
+[36m@@ -4791,9 +4804,9 @@[m
+       }[m
+     },[m
+     "node_modules/drizzle-orm": {[m
+[31m-      "version": "0.39.1",[m
+[31m-      "resolved": "https://registry.npmjs.org/drizzle-orm/-/drizzle-orm-0.39.1.tgz",[m
+[31m-      "integrity": "sha512-2bDHlzTY31IDmrYn8i+ZZrxK8IyBD4mPZ7JmZdVDQj2tpBZXs/gxB/1kK5pSvkjxPUMNOVsTnoGkSltgjuJwcA==",[m
+[32m+[m[32m      "version": "0.39.3",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/drizzle-orm/-/drizzle-orm-0.39.3.tgz",[m
+[32m+[m[32m      "integrity": "sha512-EZ8ZpYvDIvKU9C56JYLOmUskazhad+uXZCTCRN4OnRMsL+xAJ05dv1eCpAG5xzhsm1hqiuC5kAZUCS924u2DTw==",[m
+       "license": "Apache-2.0",[m
+       "peerDependencies": {[m
+         "@aws-sdk/client-rds-data": ">=3",[m
+[36m@@ -4809,7 +4822,6 @@[m
+         "@tidbcloud/serverless": "*",[m
+         "@types/better-sqlite3": "*",[m
+         "@types/pg": "*",[m
+[31m-        "@types/react": ">=18",[m
+         "@types/sql.js": "*",[m
+         "@vercel/postgres": ">=0.8.0",[m
+         "@xata.io/client": "*",[m
+[36m@@ -4821,7 +4833,6 @@[m
+         "mysql2": ">=2",[m
+         "pg": ">=8",[m
+         "postgres": ">=3",[m
+[31m-        "react": ">=18",[m
+         "sql.js": ">=1",[m
+         "sqlite3": ">=5"[m
+       },[m
+[36m@@ -4865,9 +4876,6 @@[m
+         "@types/pg": {[m
+           "optional": true[m
+         },[m
+[31m-        "@types/react": {[m
+[31m-          "optional": true[m
+[31m-        },[m
+         "@types/sql.js": {[m
+           "optional": true[m
+         },[m
+[36m@@ -4904,9 +4912,6 @@[m
+         "prisma": {[m
+           "optional": true[m
+         },[m
+[31m-        "react": {[m
+[31m-          "optional": true[m
+[31m-        },[m
+         "sql.js": {[m
+           "optional": true[m
+         },[m
+[36m@@ -8846,9 +8851,9 @@[m
+       }[m
+     },[m
+     "node_modules/ws": {[m
+[31m-      "version": "8.18.0",[m
+[31m-      "resolved": "https://registry.npmjs.org/ws/-/ws-8.18.0.tgz",[m
+[31m-      "integrity": "sha512-8VbfWfHLbbwu3+N6OKsOMpBdT4kXPDDB9cJk2bJ6mh9ucxdlnNvH1e+roYkKmN9Nxw2yjz7VzeO9oOz2zJ04Pw==",[m
+[32m+[m[32m      "version": "8.18.1",[m
+[32m+[m[32m      "resolved": "https://registry.npmjs.org/ws/-/ws-8.18.1.tgz",[m
+[32m+[m[32m      "integrity": "sha512-RKW2aJZMXeMxVpnZ6bck+RswznaxmzdULiBr6KY7XkTnW8uvt0iT9H5DkHUChXrc+uurzwa0rVI16n/Xzjdz1w==",[m
+       "license": "MIT",[m
+       "engines": {[m
+         "node": ">=10.0.0"[m
+[1mdiff --git a/package.json b/package.json[m
+[1mindex 3e92c77..ecb93a1 100644[m
+[1m--- a/package.json[m
+[1m+++ b/package.json[m
+[36m@@ -49,7 +49,8 @@[m
+     "cmdk": "^1.0.0",[m
+     "connect-pg-simple": "^10.0.0",[m
+     "date-fns": "^3.6.0",[m
+[31m-    "drizzle-orm": "^0.39.1",[m
+[32m+[m[32m    "dotenv": "^16.4.7",[m
+[32m+[m[32m    "drizzle-orm": "^0.39.3",[m
+     "drizzle-zod": "^0.7.0",[m
+     "embla-carousel-react": "^8.3.0",[m
+     "express": "^4.21.2",[m
+[36m@@ -72,7 +73,7 @@[m
+     "tailwindcss-animate": "^1.0.7",[m
+     "vaul": "^1.1.0",[m
+     "wouter": "^3.3.5",[m
+[31m-    "ws": "^8.18.0",[m
+[32m+[m[32m    "ws": "^8.18.1",[m
+     "zod": "^3.23.8",[m
+     "zod-validation-error": "^3.4.0"[m
+   },[m
+[36m@@ -83,12 +84,12 @@[m
+     "@types/connect-pg-simple": "^7.0.3",[m
+     "@types/express": "4.17.21",[m
+     "@types/express-session": "^1.18.0",[m
+[31m-    "@types/node": "^20.16.11",[m
+[32m+[m[32m    "@types/node": "^20.17.30",[m
+     "@types/passport": "^1.0.16",[m
+     "@types/passport-local": "^1.0.38",[m
+     "@types/react": "^18.3.20",[m
+     "@types/react-dom": "^18.3.1",[m
+[31m-    "@types/ws": "^8.5.13",[m
+[32m+[m[32m    "@types/ws": "^8.18.1",[m
+     "@vitejs/plugin-react": "^4.3.2",[m
+     "autoprefixer": "^10.4.20",[m
+     "drizzle-kit": "^0.30.4",[m
+[1mdiff --git a/server/db.ts b/server/db.ts[m
+[1mindex 66779a9..d5251e8 100644[m
+[1m--- a/server/db.ts[m
+[1m+++ b/server/db.ts[m
+[36m@@ -2,14 +2,14 @@[m [mimport { Pool, neonConfig } from '@neondatabase/serverless';[m
+ import { drizzle } from 'drizzle-orm/neon-serverless';[m
+ import ws from "ws";[m
+ import * as schema from "@shared/schema";[m
+[32m+[m[32mimport dotenv from 'dotenv';[m
+[32m+[m
+[32m+[m[32m// Carrega as variáveis de ambiente do arquivo .env[m
+[32m+[m[32mdotenv.config();[m
+ [m
+ neonConfig.webSocketConstructor = ws;[m
+ [m
+[31m-if (!process.env.DATABASE_URL) {[m
+[31m-  throw new Error([m
+[31m-    "DATABASE_URL must be set. Did you forget to provision a database?",[m
+[31m-  );[m
+[31m-}[m
+[32m+[m[32mconst connectionString = process.env.DATABASE_URL || "postgresql://neondb_owner:npg_JwgP2ZuKzGm5@ep-delicate-haze-acqi8t43-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require";[m
+ [m
+[31m-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });[m
+[32m+[m[32mexport const pool = new Pool({ connectionString });[m
+ export const db = drizzle({ client: pool, schema });[m
+[1mdiff --git a/server/index.ts b/server/index.ts[m
+[1mindex acfa5b4..2f7b55a 100644[m
+[1m--- a/server/index.ts[m
+[1m+++ b/server/index.ts[m
+[36m@@ -22,6 +22,13 @@[m [mconst app = express();[m
+ app.use(express.json());[m
+ app.use(express.urlencoded({ extended: false }));[m
+ [m
+[32m+[m[32m// Adiciona CORS para desenvolvimento[m
+[32m+[m[32mapp.use((req, res, next) => {[m
+[32m+[m[32m  res.header('Access-Control-Allow-Origin', '*');[m
+[32m+[m[32m  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');[m
+[32m+[m[32m  next();[m
+[32m+[m[32m});[m
+[32m+[m
+ app.use((req, res, next) => {[m
+   const start = Date.now();[m
+   const path = req.path;[m
+[36m@@ -72,15 +79,10 @@[m [mapp.use((req, res, next) => {[m
+     serveStatic(app);[m
+   }[m
+ [m
+[31m-  // ALWAYS serve the app on port 5000[m
+[31m-  // this serves both the API and the client.[m
+[31m-  // It is the only port that is not firewalled.[m
+[31m-  const port = 5000;[m
+[31m-  server.listen({[m
+[31m-    port,[m
+[31m-    host: "0.0.0.0",[m
+[31m-    reusePort: true,[m
+[31m-  }, () => {[m
+[31m-    log(`serving on port ${port}`);[m
+[32m+[m[32m  const port = 3000;[m
+[32m+[m[32m  const host = 'localhost';[m
+[32m+[m[41m  [m
+[32m+[m[32m  server.listen(port, host, () => {[m
+[32m+[m[32m    log(`Server running at http://${host}:${port}`);[m
+   });[m
+ })();[m
+[1mdiff --git a/server/init-database.sql b/server/init-database.sql[m
+[1mnew file mode 100644[m
+[1mindex 0000000..85c8c83[m
+[1m--- /dev/null[m
+[1m+++ b/server/init-database.sql[m
+[36m@@ -0,0 +1,98 @@[m
+[32m+[m[32m-- Criação das tabelas[m
+[32m+[m[32mCREATE TABLE IF NOT EXISTS users ([m
+[32m+[m[32m  id SERIAL PRIMARY KEY,[m
+[32m+[m[32m  username TEXT NOT NULL UNIQUE,[m
+[32m+[m[32m  password TEXT NOT NULL[m
+[32m+[m[32m);[m
+[32m+[m
+[32m+[m[32mCREATE TABLE IF NOT EXISTS activity_types ([m
+[32m+[m[32m  id SERIAL PRIMARY KEY,[m
+[32m+[m[32m  code TEXT NOT NULL UNIQUE,[m
+[32m+[m[32m  name TEXT NOT NULL,[m
+[32m+[m[32m  color TEXT NOT NULL[m
+[32m+[m[32m);[m
+[32m+[m
+[32m+[m[32mCREATE TABLE IF NOT EXISTS professionals ([m
+[32m+[m[32m  id SERIAL PRIMARY KEY,[m
+[32m+[m[32m  name TEXT NOT NULL,[m
+[32m+[m[32m  initials TEXT NOT NULL,[m
+[32m+[m[32m  active INTEGER NOT NULL DEFAULT 1[m
+[32m+[m[32m);[m
+[32m+[m
+[32m+[m[32mCREATE TABLE IF NOT EXISTS time_slots ([m
+[32m+[m[32m  id SERIAL PRIMARY KEY,[m
+[32m+[m[32m  start_time TEXT NOT NULL,[m
+[32m+[m[32m  end_time TEXT NOT NULL,[m
+[32m+[m[32m  interval INTEGER NOT NULL DEFAULT 30,[m
+[32m+[m[32m  is_base_slot INTEGER NOT NULL DEFAULT 1[m
+[32m+[m[32m);[m
+[32m+[m
+[32m+[m[32mCREATE TABLE IF NOT EXISTS schedules ([m
+[32m+[m[32m  id SERIAL PRIMARY KEY,[m
+[32m+[m[32m  professional_id INTEGER NOT NULL,[m
+[32m+[m[32m  weekday TEXT NOT NULL,[m
+[32m+[m[32m  start_time TEXT NOT NULL,[m
+[32m+[m[32m  end_time TEXT NOT NULL,[m
+[32m+[m[32m  activity_code TEXT NOT NULL,[m
+[32m+[m[32m  location TEXT,[m
+[32m+[m[32m  notes TEXT,[m
+[32m+[m[32m  updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP[m
+[32m+[m[32m);[m
+[32m+[m
+[32m+[m[32m-- Inserção dos tipos de atividades[m
+[32m+[m[32mINSERT INTO activity_types (code, name, color) VALUES ('aula', 'Aula', '#3b82f6');[m
+[32m+[m[32mINSERT INTO activity_types (code, name, color) VALUES ('reuniao', 'Reunião', '#8b5cf6');[m
+[32m+[m[32mINSERT INTO activity_types (code, name, color) VALUES ('plantao', 'Plantão', '#22c55e');[m
+[32m+[m[32mINSERT INTO activity_types (code, name, color) VALUES ('estudo', 'Estudo', '#eab308');[m
+[32m+[m[32mINSERT INTO activity_types (code, name, color) VALUES ('evento', 'Evento', '#ef4444');[m
+[32m+[m[32mINSERT INTO activity_types (code, name, color) VALUES ('ferias', 'Férias', '#06b6d4');[m
+[32m+[m[32mINSERT INTO activity_types (code, name, color) VALUES ('licenca', 'Licença', '#64748b');[m
+[32m+[m[32mINSERT INTO activity_types (code, name, color) VALUES ('disponivel_horario', 'Indisponível', '#6b7280');[m
+[32m+[m
+[32m+[m[32m-- Inserção dos horários padrão[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('08:00', '08:30', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('08:30', '09:00', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('09:00', '09:30', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('09:30', '10:00', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('10:00', '10:30', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('10:30', '11:00', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('11:00', '11:30', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('11:30', '12:00', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('13:00', '13:30', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('13:30', '14:00', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('14:00', '14:30', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('14:30', '15:00', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('15:00', '15:30', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('15:30', '16:00', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('16:00', '16:30', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('16:30', '17:00', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('17:00', '17:30', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('17:30', '18:00', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('18:00', '18:30', 30, 1);[m
+[32m+[m[32mINSERT INTO time_slots (start_time, end_time, interval, is_base_slot) VALUES ('18:30', '19:00', 30, 1);[m
+[32m+[m
+[32m+[m[32m-- Inserção dos professores[m
+[32m+[m[32mINSERT INTO professionals (name, initials, active) VALUES ('Prof. Paulo', 'PP', 1);[m
+[32m+[m[32mINSERT INTO professionals (name, initials, active) VALUES ('Profa. Ana Maria', 'AM', 1);[m
+[32m+[m[32mINSERT INTO professionals (name, initials, active) VALUES ('Prof. Carlos', 'CL', 1);[m
+[32m+[m[32mINSERT INTO professionals (name, initials, active) VALUES ('Prof. João', 'JM', 1);[m
+[32m+[m[32mINSERT INTO professionals (name, initials, active) VALUES ('Profa. Maria', 'MM', 1);[m
+[32m+[m
+[32m+[m[32m-- Inserção de algumas escalas de exemplo[m
+[32m+[m[32mINSERT INTO schedules (professional_id, weekday, start_time, end_time, activity_code, location, notes)[m[41m [m
+[32m+[m[32mVALUES (1, 'segunda', '08:00', '09:30', 'aula', 'Sala 101', 'Matemática');[m
+[32m+[m
+[32m+[m[32mINSERT INTO schedules (professional_id, weekday, start_time, end_time, activity_code, location, notes)[m[41m [m
+[32m+[m[32mVALUES (2, 'segunda', '08:00', '09:30', 'aula', 'Sala 203', 'Português');[m
+[32m+[m
+[32m+[m[32mINSERT INTO schedules (professional_id, weekday, start_time, end_time, activity_code, location, notes)[m[41m [m
+[32m+[m[32mVALUES (3, 'segunda', '08:00', '09:30', 'disponivel_horario', '', '');[m
+[32m+[m
+[32m+[m[32mINSERT INTO schedules (professional_id, weekday, start_time, end_time, activity_code, location, notes)[m[41m [m
+[32m+[m[32mVALUES (4, 'segunda', '08:00', '09:30', 'estudo', 'Biblioteca', 'Preparação de aulas');[m
+[32m+[m
+[32m+[m[32mINSERT INTO schedules (professional_id, weekday, start_time, end_time, activity_code, location, notes)[m[41m [m
+[32m+[m[32mVALUES (5, 'segunda', '08:00', '09:30', 'plantao', 'Sala Professores', 'Plantão de dúvidas');[m
+[32m+[m
+[32m+[m[32mINSERT INTO schedules (professional_id, weekday, start_time, end_time, activity_code, location, notes)[m[41m [m
+[32m+[m[32mVALUES (1, 'segunda', '09:45', '11:15', 'reuniao', 'Sala Reuniões', 'Reunião pedagógica');[m[41m [m
+\ No newline at end of file[m
+[1mdiff --git a/server/init-database.ts b/server/init-database.ts[m
+[1mnew file mode 100644[m
+[1mindex 0000000..aec7d2b[m
+[1m--- /dev/null[m
+[1m+++ b/server/init-database.ts[m
+[36m@@ -0,0 +1,77 @@[m
+[32m+[m[32mimport { pool } from './db';[m
+[32m+[m[32mimport fs from 'fs';[m
+[32m+[m[32mimport path from 'path';[m
+[32m+[m[32mimport { fileURLToPath } from 'url';[m
+[32m+[m
+[32m+[m[32m// Obter o diretório atual em ES modules[m
+[32m+[m[32mconst __filename = fileURLToPath(import.meta.url);[m
+[32m+[m[32mconst __dirname = path.dirname(__filename);[m
+[32m+[m
+[32m+[m[32masync function initDatabase() {[m
+[32m+[m[32m  try {[m
+[32m+[m[32m    console.log('Iniciando a criação do banco de dados...');[m
+[32m+[m[41m    [m
+[32m+[m[32m    // Lê o arquivo SQL[m
+[32m+[m[32m    const sqlFilePath = path.join(__dirname, 'init-database.sql');[m
+[32m+[m[32m    const sqlContent = fs.readFileSync(sqlFilePath, 'utf8');[m
+[32m+[m[41m    [m
+[32m+[m[32m    // Divide o conteúdo em comandos SQL individuais e remove comentários[m
+[32m+[m[32m    const commands = sqlContent[m
+[32m+[m[32m      .split(';')[m
+[32m+[m[32m      .map(cmd => {[m
+[32m+[m[32m        // Remove comentários e linhas vazias[m
+[32m+[m[32m        return cmd[m
+[32m+[m[32m          .split('\n')[m
+[32m+[m[32m          .filter(line => !line.trim().startsWith('--'))[m
+[32m+[m[32m          .join('\n')[m
+[32m+[m[32m          .trim();[m
+[32m+[m[32m      })[m
+[32m+[m[32m      .filter(cmd => cmd.length > 0);[m
+[32m+[m[41m    [m
+[32m+[m[32m    console.log(`Encontrados ${commands.length} comandos SQL para executar`);[m
+[32m+[m[41m    [m
+[32m+[m[32m    // Executa cada comando SQL[m
+[32m+[m[32m    for (let i = 0; i < commands.length; i++) {[m
+[32m+[m[32m      const command = commands[i];[m
+[32m+[m[32m      try {[m
+[32m+[m[32m        console.log(`\nExecutando comando ${i + 1}/${commands.length}:`);[m
+[32m+[m[32m        console.log(command);[m
+[32m+[m[32m        await pool.query(command);[m
+[32m+[m[32m        console.log(`✅ Comando ${i + 1}/${commands.length} executado com sucesso`);[m
+[32m+[m[32m      } catch (error) {[m
+[32m+[m[32m        console.error(`❌ Erro ao executar comando ${i + 1}/${commands.length}:`);[m
+[32m+[m[32m        console.error(error);[m
+[32m+[m[32m        throw error; // Interrompe a execução se houver erro[m
+[32m+[m[32m      }[m
+[32m+[m[32m    }[m
+[32m+[m[41m    [m
+[32m+[m[32m    console.log('\nInicialização do banco de dados concluída!');[m
+[32m+[m[32m    return true;[m
+[3
