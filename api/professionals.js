@@ -1,11 +1,5 @@
-import { Pool } from '@neondatabase/serverless';
+import { pool } from './db';
 import { insertProfessionalSchema } from '../shared/schema';
-
-// Configuração do pool de conexões
-const pool = new Pool({ 
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : undefined
-});
 
 // Funções do storage
 async function getAllProfessionals() {
