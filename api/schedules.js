@@ -1,8 +1,65 @@
 import { pool } from './db.js';
 
+// Função para garantir que todas as tabelas existem
+async function ensureTablesExist() {
+  try {
+    // Criar tabela de profissionais
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS professionals (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        initials TEXT NOT NULL,
+        active BOOLEAN DEFAULT true
+      )
+    `);
+    console.log('Tabela professionals verificada/criada com sucesso');
+
+    // Criar tabela de tipos de atividade
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS activity_types (
+        id SERIAL PRIMARY KEY,
+        code TEXT NOT NULL UNIQUE,
+        name TEXT NOT NULL,
+        color TEXT NOT NULL
+      )
+    `);
+    console.log('Tabela activity_types verificada/criada com sucesso');
+
+    // Criar tabela de slots de tempo
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS time_slots (
+        id SERIAL PRIMARY KEY,
+        start_time TEXT NOT NULL,
+        end_time TEXT NOT NULL,
+        is_base BOOLEAN DEFAULT false
+      )
+    `);
+    console.log('Tabela time_slots verificada/criada com sucesso');
+
+    // Criar tabela de agendamentos
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS schedules (
+        id SERIAL PRIMARY KEY,
+        professional_id INTEGER REFERENCES professionals(id),
+        activity_type_id INTEGER REFERENCES activity_types(id),
+        time_slot_id INTEGER REFERENCES time_slots(id),
+        date TEXT NOT NULL,
+        client_name TEXT NOT NULL,
+        client_phone TEXT,
+        notes TEXT
+      )
+    `);
+    console.log('Tabela schedules verificada/criada com sucesso');
+  } catch (error) {
+    console.error('Erro ao verificar/criar tabelas:', error);
+    throw error;
+  }
+}
+
 // Funções do storage
 async function getAllSchedules() {
   try {
+    await ensureTablesExist();
     const result = await pool.query(`
       SELECT 
         s.*,
@@ -19,7 +76,7 @@ async function getAllSchedules() {
     return result.rows;
   } catch (error) {
     console.error('Erro ao buscar agendamentos:', error);
-    return [];
+    throw error;
   }
 }
 

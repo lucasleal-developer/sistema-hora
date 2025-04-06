@@ -1,16 +1,35 @@
 import { pool } from './db.js';
 import { insertProfessionalSchema } from '../shared/schema.js';
 
+// Função para garantir que a tabela existe
+async function ensureTableExists() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS professionals (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL,
+        initials TEXT NOT NULL,
+        active BOOLEAN DEFAULT true
+      )
+    `);
+    console.log('Tabela professionals verificada/criada com sucesso');
+  } catch (error) {
+    console.error('Erro ao verificar/criar tabela professionals:', error);
+    throw error;
+  }
+}
+
 // Funções do storage
 async function getAllProfessionals() {
   try {
+    await ensureTableExists();
     const result = await pool.query(
       'SELECT * FROM professionals ORDER BY name'
     );
     return result.rows;
   } catch (error) {
     console.error('Erro ao buscar profissionais:', error);
-    throw new Error(`Erro ao buscar profissionais: ${error}`);
+    throw error;
   }
 }
 

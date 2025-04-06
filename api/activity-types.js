@@ -1,16 +1,35 @@
 import { pool } from './db.js';
 import { insertActivityTypeSchema } from '../shared/schema.js';
 
+// Função para garantir que a tabela existe
+async function ensureTableExists() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS activity_types (
+        id SERIAL PRIMARY KEY,
+        code TEXT NOT NULL UNIQUE,
+        name TEXT NOT NULL,
+        color TEXT NOT NULL
+      )
+    `);
+    console.log('Tabela activity_types verificada/criada com sucesso');
+  } catch (error) {
+    console.error('Erro ao verificar/criar tabela activity_types:', error);
+    throw error;
+  }
+}
+
 // Funções do storage
 async function getAllActivityTypes() {
   try {
+    await ensureTableExists();
     const result = await pool.query(
       'SELECT * FROM activity_types ORDER BY name'
     );
     return result.rows;
   } catch (error) {
-    console.error('Erro ao buscar tipos de atividades:', error);
-    return [];
+    console.error('Erro ao buscar tipos de atividade:', error);
+    throw error;
   }
 }
 

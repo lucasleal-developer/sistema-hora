@@ -1,16 +1,35 @@
 import { pool } from './db.js';
 import { insertTimeSlotSchema } from '../shared/schema.js';
 
+// Função para garantir que a tabela existe
+async function ensureTableExists() {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS time_slots (
+        id SERIAL PRIMARY KEY,
+        start_time TEXT NOT NULL,
+        end_time TEXT NOT NULL,
+        is_base BOOLEAN DEFAULT false
+      )
+    `);
+    console.log('Tabela time_slots verificada/criada com sucesso');
+  } catch (error) {
+    console.error('Erro ao verificar/criar tabela time_slots:', error);
+    throw error;
+  }
+}
+
 // Funções do storage
 async function getAllTimeSlots() {
   try {
+    await ensureTableExists();
     const result = await pool.query(
       'SELECT * FROM time_slots ORDER BY start_time'
     );
     return result.rows;
   } catch (error) {
     console.error('Erro ao buscar horários:', error);
-    return [];
+    throw error;
   }
 }
 
